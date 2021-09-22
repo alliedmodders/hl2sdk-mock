@@ -1,0 +1,6 @@
+[submodule "third_party/cli"]
+	path = third_party/cli
+	url = https://github.com/daniele77/cli
+[submodule "third_party/amtl"]
+	path = third_party/amtl
+	url = https://github.com/alliedmodders/amtl

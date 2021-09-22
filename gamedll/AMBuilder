@@ -1,0 +1,22 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+binary = Root.Library(builder, 'gamedll')
+
+binary.sources += [
+    'gamedll.cpp',
+    'tools.cpp',
+]
+binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath, 'public'),
+    os.path.join(builder.sourcePath, 'public', 'tier0'),
+    os.path.join(builder.sourcePath, 'public', 'tier1'),
+    os.path.join(builder.sourcePath, 'third_party', 'amtl'),
+]
+
+binary.compiler.postlink += [
+    Root.tier1[builder.cxx.target.arch],
+]
+
+entry = builder.Add(binary).binary
+Root.gamedll[binary.compiler.target.arch] = entry

@@ -1,0 +1,15 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+binary = Root.StaticLibrary(builder, 'mathlib')
+
+binary.sources += [
+    'empty.cpp',
+]
+binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath, 'public'),
+    os.path.join(builder.sourcePath, 'public', 'tier0'),
+    os.path.join(builder.sourcePath, 'third_party', 'amtl'),
+]
+
+Root.mathlib[binary.compiler.target.arch] = builder.Add(binary).binary

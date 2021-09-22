@@ -1,0 +1,20 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+binary = Root.Library(builder, 'tier0')
+
+binary.sources += [
+    'commandline.cpp',
+    'dbg.cpp',
+    'logmanager.cpp',
+    'mem.cpp',
+    'platform.cpp',
+    'vprof.cpp',
+]
+binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath, 'public'),
+    os.path.join(builder.sourcePath, 'public', 'tier0'),
+    os.path.join(builder.sourcePath, 'third_party', 'amtl'),
+]
+
+rvalue = builder.Add(binary).binary

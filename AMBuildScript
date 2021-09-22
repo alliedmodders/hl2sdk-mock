@@ -1,0 +1,213 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+class Root(object):
+    def __init__(self):
+        self.targets = []
+        self.tier0 = {}
+        self.tier1 = {}
+        self.vstdlib = {}
+        self.mathlib = {}
+        self.gamedll = {}
+        self.srcds = {}
+        self.so_files = {}
+        self.renames = {}
+        self.lib_folders = {}
+
+    def configure(self):
+        if builder.options.targets:
+            targets = builder.options.targets.split(',')
+
+            dupes = set()
+            for target in targets:
+                if target in dupes:
+                    continue
+                dupes.add(target)
+
+                cxx = builder.DetectCxx(target = target)
+                self.configure_cxx(cxx)
+                self.targets.append(cxx)
+        else:
+            cxx = builder.DetectCxx()
+            self.configure_cxx(cxx)
+            self.targets.append(cxx)
+
+        self.add_renames()
+
+    def configure_cxx(self, cxx):
+        if cxx.like('gcc'):
+          cxx.cflags += [
+            '-pipe',
+            '-Wall',
+            '-Werror',
+            '-Wno-switch',
+          ]
+          cxx.cxxflags += [
+            '-std=c++17',
+            '-Wno-unused-private-field',
+          ]
+        elif cxx.like('msvc'):
+          if builder.options.debug == '1':
+            cxx.cflags += ['/MTd']
+            cxx.linkflags += ['/NODEFAULTLIB:libcmt']
+          else:
+            cxx.cflags += ['/MT']
+          cxx.defines += [
+            '_CRT_SECURE_NO_DEPRECATE',
+            '_CRT_SECURE_NO_WARNINGS',
+            '_CRT_NONSTDC_NO_DEPRECATE',
+            '_ITERATOR_DEBUG_LEVEL=0',
+          ]
+          cxx.cflags += [
+            '/W3',
+            '/wd4351',
+          ]
+          cxx.cxxflags += [
+            '/EHsc',
+            '/GR-',
+            '/TP',
+          ]
+          cxx.linkflags += [
+            'kernel32.lib',
+            'user32.lib',
+            'gdi32.lib',
+            'winspool.lib',
+            'comdlg32.lib',
+            'advapi32.lib',
+            'shell32.lib',
+            'ole32.lib',
+            'oleaut32.lib',
+            'uuid.lib',
+            'odbc32.lib',
+            'odbccp32.lib',
+          ]
+
+    def build(self):
+        for cxx in self.targets:
+            self.tier0[cxx.target.arch] = self.BuildForArch('tier0/AMBuilder', cxx)
+            self.tier1[cxx.target.arch] = self.BuildForArch('tier1/AMBuilder', cxx)
+            self.BuildForArch('gamedll/AMBuilder', cxx)
+            self.BuildForArch('vstdlib/AMBuilder', cxx)
+            self.BuildForArch('mathlib/AMBuilder', cxx)
+            self.BuildForArch('srcds/AMBuilder', cxx)
+
+    def add_renames(self):
+        for cxx in self.targets:
+            self.add_renames_for_arch(cxx)
+
+    def add_renames_for_arch(self, cxx):
+        tier0 = 'tier0'
+        tier1 = 'tier1'
+        vstdlib = 'vstdlib'
+        mathlib = 'mathlib'
+        if cxx.target.platform == 'linux':
+            if cxx.target.arch == 'x86_64':
+                out_folder = 'lib/linux64'
+                tier0 = 'libtier0_client'
+                vstdlib = 'libvstdlib_client'
+            else:
+                out_folder = 'lib/linux'
+                tier0 = 'tier0_i486'
+                tier1 = 'tier1_i486'
+                mathlib = 'mathlib_i486'
+                vstdlib = 'vstdlib_i486'
+        elif cxx.target.platform == 'mac':
+            if cxx.target.arch == 'x86_64':
+                out_folder = 'lib/osx64'
+            else:
+                out_folder = 'lib/mac'
+                tier1 = 'tier1_i486'
+                mathlib = 'mathlib_i486'
+            tier0 = 'libtier0'
+            vstdlib = 'libvstdlib'
+        elif cxx.target.platform == 'windows':
+            if cxx.target.arch == 'x86_64':
+                out_folder = 'lib/public/win64'
+            else:
+                out_folder = 'lib/public'
+
+        self.renames[cxx.target.arch] = {
+            'tier0': tier0,
+            'tier1': tier1,
+            'vstdlib': vstdlib,
+            'mathlib': mathlib,
+        }
+        self.lib_folders[cxx.target.arch] = out_folder
+
+    def BuildForArch(self, scripts, cxx):
+        kv = {
+            'Root': self,
+        }
+        builder.cxx = cxx
+        return builder.Build(scripts, kv)
+
+    def SetArchFlags(self, compiler):
+        if compiler.like('gcc'):
+            if compiler.target.arch == 'x86':
+                if not compiler.like('emscripten'):
+                    compiler.cflags += ['-msse']
+            else:
+                    compiler.cflags += ['-fPIC']
+
+    def ProgramBuilder(self, compiler, name):
+        binary = compiler.Program(name)
+        if binary.compiler.like('msvc'):
+            binary.compiler.linkflags.append('/SUBSYSTEM:CONSOLE')
+        return binary
+
+    def Program(self, context, name):
+        compiler = context.cxx.clone()
+        self.SetArchFlags(compiler)
+        return self.ProgramBuilder(compiler, name)
+
+    def StaticLibraryBuilder(self, compiler, name):
+        return compiler.StaticLibrary(name)
+
+    def StaticLibrary(self, context, name):
+        compiler = context.cxx.clone()
+        self.SetArchFlags(compiler)
+        return self.StaticLibraryBuilder(compiler, name)
+
+    def LibraryBuilder(self, compiler, name):
+        return compiler.Library(name)
+
+    def Library(self, context, name):
+        compiler = context.cxx.clone()
+        self.SetArchFlags(compiler)
+        return self.LibraryBuilder(compiler, name)
+
+    def dist(self):
+        for cxx in self.targets:
+            builder.CallBuilder(lambda builder: self.copy_prebuilts(cxx, builder))
+            builder.CallBuilder(lambda builder: self.copy_dist(cxx, builder))
+
+    def copy_prebuilts(self, cxx, builder):
+        # Naming is incredibly inconsistent. We copy CSGO layout.
+        def rename(node, newname):
+            base = os.path.basename(node)
+            _, ext = os.path.splitext(base)
+            return newname + ext
+
+        def copy(node, key, *args, **kwargs):
+            newname = self.renames[cxx.target.arch][key]
+            return builder.AddCopy(node, rename(node.path, newname))
+
+        builder.SetBuildFolder(self.lib_folders[cxx.target.arch])
+        self.so_files[cxx.target.arch] = [
+            copy(self.tier0[cxx.target.arch], 'tier0'),
+            copy(self.tier1[cxx.target.arch], 'tier1'),
+            copy(self.mathlib[cxx.target.arch], 'mathlib'),
+            copy(self.vstdlib[cxx.target.arch], 'vstdlib'),
+        ]
+
+    def copy_dist(self, cxx, builder):
+        builder.SetBuildFolder('dist/{}'.format(cxx.target.arch))
+        builder.AddCopy(self.gamedll[cxx.target.arch], '.')
+        builder.AddCopy(self.srcds[cxx.target.arch], '.')
+        for so_file in self.so_files[cxx.target.arch]:
+            builder.AddCopy(so_file, '.')
+
+root = Root()
+root.configure()
+root.build()
+root.dist()

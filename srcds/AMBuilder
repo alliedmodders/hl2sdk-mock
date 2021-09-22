@@ -1,0 +1,54 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+binary = Root.Program(builder, 'srcds')
+
+binary.sources += [
+    'console.cpp',
+    'cvars.cpp',
+    'engine.cpp',
+    'fs.cpp',
+    'gameevents.cpp',
+    'main.cpp',
+    'server.cpp',
+    'sound.cpp',
+]
+binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath),
+    os.path.join(builder.sourcePath, 'public'),
+    os.path.join(builder.sourcePath, 'public', 'engine'),
+    os.path.join(builder.sourcePath, 'public', 'tier1'),
+    os.path.join(builder.sourcePath, 'third_party', 'amtl'),
+]
+binary.compiler.linkflags += [
+    '-Wl,-z,origin',
+]
+binary.compiler.postlink += [
+    Root.tier1[builder.cxx.target.arch],
+    '-ldl',
+    '-lpthread',
+]
+
+# Transform 'tier0' => 'tier0_i486.so' or whatever funky name is needed for
+# this platform. The rename map is computed in AMBuildScript.
+def link_library(srcbin, destname_key):
+    _, ext = os.path.splitext(srcbin.path)
+    newname = Root.renames[binary.compiler.target.arch][destname_key]
+    newname += ext
+
+    output_path = os.path.join(binary.localFolder, newname)
+
+    # Ensure the output path exists.
+    builder.AddFolder(binary.localFolder)
+    output = builder.AddSymlink(srcbin, output_path)
+
+    binary.compiler.weaklinkdeps += [output]
+    binary.compiler.linkflags += ['-Wl,-rpath,$ORIGIN/']
+    binary.compiler.linkflags += [newname]
+
+arch = binary.compiler.target.arch
+link_library(Root.tier0[arch], 'tier0')
+link_library(Root.tier0[arch], 'vstdlib')
+
+entry = builder.Add(binary).binary
+Root.srcds[binary.compiler.target.arch] = entry

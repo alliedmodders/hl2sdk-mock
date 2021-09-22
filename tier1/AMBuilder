@@ -1,0 +1,19 @@
+#! vim: set sts=4 sw=4 tw=99 et ft=python:
+import os
+
+binary = Root.StaticLibrary(builder, 'tier1')
+
+binary.sources += [
+    'convar.cpp',
+    'interface.cpp',
+    'keyvalues.cpp',
+    'strtools.cpp',
+]
+binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath, 'tier1'),
+    os.path.join(builder.sourcePath, 'public'),
+    os.path.join(builder.sourcePath, 'public', 'tier1'),
+    os.path.join(builder.sourcePath, 'third_party', 'amtl'),
+]
+
+rvalue = builder.Add(binary).binary
