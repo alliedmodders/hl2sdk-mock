@@ -4,7 +4,6 @@ import os
 binary = Root.Program(builder, 'srcds')
 
 binary.sources += [
-    'console.cpp',
     'cvars.cpp',
     'engine.cpp',
     'fs.cpp',

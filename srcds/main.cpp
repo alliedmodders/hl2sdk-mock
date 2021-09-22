@@ -5,7 +5,6 @@
 #include <iostream>
 #include <string>
 
-#include "console.h"
 #include "fs.h"
 #include "server.h"
 #include "tier0/commandline.h"
