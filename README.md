@@ -2,7 +2,7 @@ Mock HL2SDK
 -----------
 
 This is a highly experimental and very incomplete "mock" of the HL2SDK. It's
-intended for testing of Metamod:Source, SourceMod, and another server plugins.
+intended for testing of Metamod:Source, SourceMod, and other server plugins.
 You don't need to download Steam or srcds. There is no Valve code in the
 implementation.
 
