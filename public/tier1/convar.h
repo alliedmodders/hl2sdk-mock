@@ -154,12 +154,12 @@ class ConVar : public ConCommandBase, public IConVar
     }
     bool GetBool() const { return !!GetInt(); }
 
-    void Revert() { SetValue(def_.c_str()); }
+    void Revert() { SetValue(def_); }
 
-    const char* GetDefault() const { return def_.c_str(); }
+    const char* GetDefault() const { return def_; }
 
   private:
-    std::string def_;
+    const char* def_;
     std::string str_value_;
     FnChangeCallback_t callback_;
 
