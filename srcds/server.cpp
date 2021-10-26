@@ -49,6 +49,13 @@ Server::Start()
         return false;
     }
 
+    game_clients_ =
+        reinterpret_cast<IServerGameClients*>(game_ci_(INTERFACEVERSION_SERVERGAMECLIENTS, nullptr));
+    if (!game_clients_) {
+        Error("Could not load gamedll.so: %s not found\n", INTERFACEVERSION_SERVERGAMECLIENTS);
+        return false;
+    }
+
     // Notify gamedll of load.
     auto engine = Engine::get();
     if (!gamedll_->DLLInit(CreateInterfaceWrapper, nullptr, nullptr, &engine->vars())) {
@@ -264,6 +271,10 @@ Server::DispatchCommand(std::string str)
         ConMsg("Unknown command: %s\n", args[0].c_str());
         return;
     }
+
+    for (const auto& plugin : plugins_)
+        plugin->callbacks->SetCommandClient(-1);
+    game_clients_->SetCommandClient(-1);
 
     if (cmd->IsCommand()) {
         CCommand ccargs(std::move(str), std::move(args));

@@ -147,5 +147,4 @@ void ServerGameClients::ClientDisconnect(edict_t *pEntity) {
 }
 
 void ServerGameClients::SetCommandClient(int index) {
-    Error("%s not implemented", __func__);
 }

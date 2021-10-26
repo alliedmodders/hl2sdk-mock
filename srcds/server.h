@@ -85,6 +85,7 @@ class Server final : public ILoggingListener
     ke::RefPtr<ke::SharedLib> game_;
     CreateInterfaceFn game_ci_ = nullptr;
     IServerGameDLL* gamedll_ = nullptr;
+    IServerGameClients* game_clients_ = nullptr;
     bool shutting_down_ = false;
     bool interrupt_ = false;
     int maxclients_ = 8;
