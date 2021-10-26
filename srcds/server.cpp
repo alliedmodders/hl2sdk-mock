@@ -3,13 +3,25 @@
 
 #include <assert.h>
 
+#include <filesystem>
+#include <iostream>
+
 #include "engine.h"
 #include "fs.h"
 #include "tier0/commandline.h"
 
 using namespace std::chrono_literals;
+using namespace std::string_literals;
 
 Server* Server::sInstance = nullptr;
+
+#if defined(_WIN32)
+static constexpr char kLibraryExt[] = ".dll";
+#elif defined(__linux__)
+static constexpr char kLibraryExt[] = ".so";
+#else
+static constexpr char kLibraryExt[] = ".dylib";
+#endif
 
 Server::Server()
 {
@@ -30,47 +42,49 @@ Server::Start()
     LogManager::get()->AddListener(this);
     ConVar_Register();
 
+    auto path = "gamedll"s + kLibraryExt;
+
     char error[255];
-    game_ = ke::SharedLib::Open("gamedll.so", error, sizeof(error));
+    game_ = ke::SharedLib::Open(path.c_str(), error, sizeof(error));
     if (!game_) {
-        Error("Could not open gamedll.so: %s\n", error);
+        Error("Could not open gamedll %s: %s\n", path.c_str(), error);
         return false;
     }
     game_ci_ = game_->get<CreateInterfaceFn>("CreateInterface");
     if (!game_ci_) {
-        Error("Could not load gamedll.so: no CreateInterface\n");
+        Error("Could not load gamedll: no CreateInterface\n");
         return false;
     }
 
     gamedll_ =
         reinterpret_cast<IServerGameDLL*>(game_ci_(INTERFACEVERSION_SERVERGAMEDLL, nullptr));
     if (!gamedll_) {
-        Error("Could not load gamedll.so: %s not found\n", INTERFACEVERSION_SERVERGAMEDLL);
+        Error("Could not load gamedll: %s not found\n", INTERFACEVERSION_SERVERGAMEDLL);
         return false;
     }
 
     game_clients_ =
         reinterpret_cast<IServerGameClients*>(game_ci_(INTERFACEVERSION_SERVERGAMECLIENTS, nullptr));
     if (!game_clients_) {
-        Error("Could not load gamedll.so: %s not found\n", INTERFACEVERSION_SERVERGAMECLIENTS);
+        Error("Could not load gamedll: %s not found\n", INTERFACEVERSION_SERVERGAMECLIENTS);
         return false;
     }
 
     // Notify gamedll of load.
     auto engine = Engine::get();
     if (!gamedll_->DLLInit(CreateInterfaceWrapper, nullptr, nullptr, &engine->vars())) {
-        Error("Could not load gamedll.so: DLLInit returned false\n");
+        Error("Could not load gamedll: DLLInit returned false\n");
     }
 
     // Game is done loading. Load metamod and plugins.
-    PluginLoad("addons/metamod/bin/linux64/server.so");
+    LoadPlugins();
     AddCommand("meta game");
     AddCommand("meta list");
     ProcessMessages();
 
     // Init and activate the server.
     if (!gamedll_->GameInit()) {
-        Error("Could not load gamedll.so: GameInit returned false\n");
+        Error("Could not load gamedll: GameInit returned false\n");
         return false;
     }
     if (auto val = CommandLine()->ParmValue("+maxplayers")) {
@@ -191,15 +205,18 @@ Server::Log(const LoggingContext_t* cx, const char* message)
         fprintf(stdout, "\n");
 }
 
-void
-Server::PluginLoad(const char* path)
-{
+void Server::PluginLoad(std::string path_in) {
     assert(std::this_thread::get_id() == thread_id_);
 
     if (shutting_down_) {
-        Error("Cannot load plugin %s during shutdown\n", path);
+        Error("Cannot load plugin %s during shutdown\n", path_in.c_str());
         return;
     }
+
+    if (!std::filesystem::exists(path_in) && !ke::EndsWith(path_in, kLibraryExt))
+        path_in += kLibraryExt;
+
+    const char* path = path_in.c_str();
 
     char buffer[255];
     ke::RefPtr<ke::SharedLib> lib = ke::SharedLib::Open(path, buffer, sizeof(buffer));
@@ -325,6 +342,20 @@ void Server::ChangeLevel(const char* map) {
     gamedll_->ServerActivate(engine->edicts(), engine->num_edicts(), maxclients_);
     for (const auto& plugin : plugins_)
         plugin->callbacks->ServerActivate(engine->edicts(), engine->num_edicts(), maxclients_);
+}
+
+void Server::LoadPlugins() {
+    const std::filesystem::path addons{"addons"};
+    for (const auto& entry : std::filesystem::directory_iterator{addons}) {
+        if (!ke::EndsWith(entry.path(), ".vdf"))
+            continue;
+
+        auto kv = std::make_unique<KeyValues>("Plugins");
+        kv->LoadFromFile(nullptr, entry.path().c_str());
+
+        if (auto file = kv->GetString("file", nullptr))
+            PluginLoad(file);
+    }
 }
 
 CON_COMMAND(plugin_load, "Load a plugin")

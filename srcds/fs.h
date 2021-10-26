@@ -38,11 +38,8 @@ class FileSystem final : public IFileSystem
     CSysModule *LoadModule(const char *pFileName, const char *pPathID = 0, bool bValidatedDllOnly = true) override;
     void UnloadModule(CSysModule *pModule) override;
 
-    void AddSearchPath(const std::string& path);
-
     static FileSystem* get();
 
   private:
     std::mutex mutex_;
-    std::vector<std::string> paths_;
 };

@@ -46,7 +46,7 @@ class Server final : public ILoggingListener
     void Shutdown();
     void Run();
     void DoFrame();
-    void PluginLoad(const char* plugin);
+    void PluginLoad(std::string path_in);
     void AddCommand(std::string str);
     void InsertCommand(std::string str);
     void DispatchCommand(std::string str);
@@ -63,6 +63,7 @@ class Server final : public ILoggingListener
     void set_pending_action() { pending_action_ = true; }
 
   private:
+    void LoadPlugins();
     void ProcessMessages();
     void Log(const LoggingContext_t* cx, const char* message) override;
     void* CreateInterface(const char* name, int* ret);

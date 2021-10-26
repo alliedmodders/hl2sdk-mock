@@ -44,12 +44,6 @@ int main(int argc, char** argv)
 {
     CommandLineImpl::get()->Init(argc, argv);
 
-    auto fs = FileSystem::get();
-    for (int i = 1; i < argc; i++) {
-        if (argv[i] == "+in"s && i != argc - 1)
-            fs->AddSearchPath(argv[i + 1]);
-    }
-
     return sServerConsole.Run() ? 0 : 1;
 }
 

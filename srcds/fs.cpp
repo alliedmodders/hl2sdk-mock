@@ -70,12 +70,6 @@ FileSystem::Close(FileHandle_t hfile)
     fclose(file);
 }
 
-void
-FileSystem::AddSearchPath(const std::string& path)
-{
-    paths_.emplace_back(path);
-}
-
 int FileSystem::Write(void const* pInput, int size, FileHandle_t file) {
     auto fp = reinterpret_cast<FILE*>(file);
     return fwrite(pInput, 1, size, fp);
