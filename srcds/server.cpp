@@ -345,8 +345,9 @@ void Server::ChangeLevel(const char* map) {
 }
 
 void Server::LoadPlugins() {
+    std::error_code ec;
     const std::filesystem::path addons{"addons"};
-    for (const auto& entry : std::filesystem::directory_iterator{addons}) {
+    for (const auto& entry : std::filesystem::directory_iterator{addons, ec}) {
         if (!ke::EndsWith(entry.path(), ".vdf"))
             continue;
 
@@ -355,6 +356,10 @@ void Server::LoadPlugins() {
 
         if (auto file = kv->GetString("file", nullptr))
             PluginLoad(file);
+    }
+    if (ec) {
+        Error("Could not open plugin directory %s: %s\n", addons.c_str(),
+              ec.message().c_str());
     }
 }
 

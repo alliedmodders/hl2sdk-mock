@@ -161,7 +161,7 @@ class ConVar : public ConCommandBase, public IConVar
   private:
     const char* def_;
     std::string str_value_;
-    FnChangeCallback_t callback_;
+    FnChangeCallback_t callback_ = nullptr;
 
   public:
     bool m_bHasMin = false;
