@@ -62,6 +62,9 @@ class Server final : public ILoggingListener
     bool pending_action() const { return pending_action_; }
     void set_pending_action() { pending_action_ = true; }
 
+    const std::string& dist_dir() const { return dist_dir_; }
+    void set_dist_dir(const std::string& dir) { dist_dir_ = dir; }
+
   private:
     void LoadPlugins();
     void ProcessMessages();
@@ -79,6 +82,7 @@ class Server final : public ILoggingListener
     };
 
   private:
+    std::string dist_dir_;
     std::mutex mutex_;
     std::thread::id thread_id_;
     std::deque<std::function<void()>> messages_;

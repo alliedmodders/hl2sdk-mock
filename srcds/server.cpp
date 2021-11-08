@@ -44,6 +44,9 @@ Server::Start()
 
     auto path = "gamedll"s + kLibraryExt;
 
+    if (!dist_dir_.empty())
+        path = dist_dir_ + "/" + path;
+
     char error[255];
     game_ = ke::SharedLib::Open(path.c_str(), error, sizeof(error));
     if (!game_) {

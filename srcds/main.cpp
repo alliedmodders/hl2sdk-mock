@@ -14,6 +14,7 @@
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #else
+# include <libgen.h>
 # include <signal.h>
 # include <unistd.h>
 #endif
@@ -94,6 +95,18 @@ bool ServerConsole::Setup() {
         Engine::get()->set_game_dir(game_dir);
     else
         Engine::get()->set_game_dir(".");
+
+#if defined(__linux__)
+    char result[PATH_MAX + 1];
+    ssize_t rv = readlink("/proc/self/exe", result, PATH_MAX);
+    if (rv == -1) {
+        fprintf(stderr, "readlink /proc/self/exe failed: %s", strerror(errno));
+        return false;
+    }
+    result[rv] = '\0';
+
+    server_.set_dist_dir(dirname(result));
+#endif
 
     const char* dir = Engine::get()->game_dir().c_str();
     if (chdir(dir)) {
