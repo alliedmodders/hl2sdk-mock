@@ -64,7 +64,10 @@ bool ServerConsole::Run() {
         fflush(stdout);
 
         std::string cmdline;
-        std::getline(std::cin, cmdline);
+        if (!std::getline(std::cin, cmdline)) {
+            PostQuit();
+            break;
+        }
 
         server_.DispatchCommand(std::move(cmdline));
         while (run_one_frame_ || server_.pending_action()) {
