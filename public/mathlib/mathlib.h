@@ -46,3 +46,5 @@ inline void MatrixAngles( const matrix3x4_t &matrix, QAngle &angles, Vector &pos
     (void)angles;
     (void)position;
 }
+
+extern const Vector vec3_origin;

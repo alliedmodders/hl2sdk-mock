@@ -4,7 +4,7 @@ import os
 binary = Root.StaticLibrary(builder, 'mathlib')
 
 binary.sources += [
-    'empty.cpp',
+    'mathlib.cpp',
 ]
 binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'public'),

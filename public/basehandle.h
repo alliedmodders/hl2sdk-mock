@@ -27,14 +27,10 @@ class CBaseHandle
         return index_ != other.index_;
     }
 
+    IHandleEntity* Get() const {
+      return nullptr;
+    }
+
   private:
     unsigned long index_;
 };
-
-template <typename T>
-class CHandle : public CBaseHandle
-{
-  public:
-};
-
-typedef CHandle<CBaseEntity> EHANDLE;
