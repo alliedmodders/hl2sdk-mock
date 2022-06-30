@@ -76,3 +76,45 @@ float EngineSound::GetDistGainFromSoundLevel(soundlevel_t soundlevel, float dist
     Error("%s not implemented", __func__);
     return 0.0f;
 }
+
+static SoundEmitterSystemBase sSoundEmitterSystemBase;
+
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(SoundEmitterSystemBase, ISoundEmitterSystemBase, SOUNDEMITTERSYSTEM_INTERFACE_VERSION,
+		                  sSoundEmitterSystemBase);
+
+int SoundEmitterSystemBase::GetSoundIndex(const char *pName) const
+{
+    Error("%s not implemented", __func__);
+    return -1;
+}
+
+bool SoundEmitterSystemBase::IsValidIndex(int index)
+{
+    Error("%s not implemented", __func__);
+    return false;
+}
+
+gender_t SoundEmitterSystemBase::GetActorGender(char const *actormodel)
+{
+    Error("%s not implemented", __func__);
+    return GENDER_NONE;
+}
+bool SoundEmitterSystemBase::GetParametersForSoundEx(const char *soundname, HSOUNDSCRIPTHASH& handle,
+                                                     CSoundParameters& params, gender_t gender,
+                                                     bool isbeingemitted)
+{
+    Error("%s not implemented", __func__);
+    return false;
+}
+
+CSoundParametersInternal *SoundEmitterSystemBase::InternalGetParametersForSound(int index)
+{
+    Error("%s not implemented", __func__);
+    return nullptr;
+}
+
+const char *SoundEmitterSystemBase::GetWaveName(CUtlSymbol& sym)
+{
+    Error("%s not implemented", __func__);
+    return nullptr;
+}

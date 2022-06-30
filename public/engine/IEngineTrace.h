@@ -1,9 +1,10 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
 #pragma once
 
+#include "const.h"
 #include "mathlib/vector.h"
 
-static constexpr char INTERFACEVERSION_ENGINETRACE_SERVER[] = "EngineTraceServer004";
+static constexpr char INTERFACEVERSION_ENGINETRACE_SERVER[] = "EngineTraceServer003";
 
 static constexpr int CONTENTS_EMPTY = 0;
 static constexpr int CONTENTS_SOLID = 0x1;
@@ -72,6 +73,11 @@ class CTraceFilterHitAll : public ITraceFilter
 {
   public:
 };
+
+class ICollideable;
+class IHandleEntity;
+class CGameTrace;
+typedef CGameTrace trace_t;
 
 class IEngineTrace
 {

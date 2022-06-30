@@ -33,6 +33,9 @@ class IPartitionEnumerator
 
 static constexpr char INTERFACEVERSION_SPATIALPARTITION[] = "SpatialPartition001";
 
+class Vector;
+struct Ray_t;
+
 class ISpatialPartition
 {
   public:

@@ -7,6 +7,7 @@
 ServerGame sGame;
 PlayerInfoManager sPlayerManager;
 ServerGameClients sGameClients;
+ServerGameEnts sGameEnts;
 CGlobalVars* gpGlobals = nullptr;
 
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ServerGame, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL,
@@ -15,6 +16,8 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(PlayerInfoManager, IPlayerInfoManager,
                                   INTERFACEVERSION_PLAYERINFOMANAGER, sPlayerManager);
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ServerGameClients, IServerGameClients,
                                   INTERFACEVERSION_SERVERGAMECLIENTS, sGameClients);
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ServerGameEnts, IServerGameEnts,
+                                  INTERFACEVERSION_SERVERGAMEENTS, sGameEnts);
 
 bool ServerGame::DLLInit(CreateInterfaceFn engineFactory, CreateInterfaceFn physicsFactory,
                          CreateInterfaceFn fileSystemFactory, CGlobalVars *pGlobals)
@@ -147,4 +150,9 @@ void ServerGameClients::ClientDisconnect(edict_t *pEntity) {
 }
 
 void ServerGameClients::SetCommandClient(int index) {
+}
+
+edict_t* ServerGameEnts::BaseEntityToEdict(CBaseEntity* ent) {
+    Error("%s not implemented", __func__);
+    return nullptr;
 }
