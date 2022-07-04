@@ -13,7 +13,7 @@ class Vector
     Vector() : x(0), y(0), z(0) {}
     Vector(float x, float y, float z) : x(x), y(y), z(z) {}
 
-    void Init(float x, float y, float z) {
+    void Init(float x = 0.0f, float y = 0.0f, float z = 0.0f) {
         this->x = x;
         this->y = y;
         this->z = z;
@@ -66,7 +66,7 @@ class QAngle
     QAngle() : x(0), y(0), z(0) {}
     QAngle(float x, float y, float z) : x(x), y(y), z(z) {}
 
-    void Init(float x, float y, float z) {
+    void Init(float x = 0.0f, float y = 0.0f, float z = 0.0f) {
         this->x = x;
         this->y = y;
         this->z = z;

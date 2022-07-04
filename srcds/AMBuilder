@@ -9,8 +9,12 @@ binary.sources += [
     'fs.cpp',
     'gameevents.cpp',
     'main.cpp',
+    'networkstringtable.cpp',
     'server.cpp',
     'sound.cpp',
+    'spatialpartition.cpp',
+    'trace.cpp',
+    'voice.cpp',
 ]
 binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath),

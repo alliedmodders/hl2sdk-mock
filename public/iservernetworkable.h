@@ -9,6 +9,7 @@ struct edict_t;
 class CCheckTransmitInfo
 {
   public:
+    edict_t* m_pClientEnt;
 };
 
 class IServerNetworkable

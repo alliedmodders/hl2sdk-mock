@@ -2,6 +2,7 @@
 #pragma once
 
 #include "edict.h"
+#include "ehandle.h"
 
 class CBaseEntity
 {
@@ -11,3 +12,5 @@ class CBaseEntity
   private:
     edict_t* edict_;
 };
+
+typedef CHandle<CBaseEntity> EHANDLE;

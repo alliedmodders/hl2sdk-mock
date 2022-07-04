@@ -32,3 +32,7 @@ class CGameTrace : public CBaseTrace
 };
 
 typedef CGameTrace trace_t;
+
+inline bool CGameTrace::DidHit() const {
+  return false;
+}

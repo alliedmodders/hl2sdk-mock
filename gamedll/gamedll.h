@@ -25,6 +25,12 @@ class ServerGameClients final : public IServerGameClients
     void SetCommandClient(int index) override;
 };
 
+class ServerGameEnts final : public IServerGameEnts
+{
+  public:
+    edict_t* BaseEntityToEdict(CBaseEntity* ent) override;
+};
+
 class ServerGame final : public IServerGameDLL
 {
   public:

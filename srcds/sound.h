@@ -2,6 +2,7 @@
 #pragma once
 
 #include "IEngineSound.h"
+#include "SoundEmitterSystem/isoundemittersystembase.h"
 
 class EngineSound : public IEngineSound
 {
@@ -39,4 +40,17 @@ class EngineSound : public IEngineSound
     void StopSound(int iEntIndex, int iChannel, const char *pSample, unsigned int nSoundEntryHash) override;
     float GetDistGainFromSoundLevel(soundlevel_t soundlevel, float dist) override;
     bool IsSoundPrecached(const char *pSample) override;
+};
+
+class SoundEmitterSystemBase : public ISoundEmitterSystemBase
+{
+  public:
+    int GetSoundIndex(const char *pName) const override;
+    bool IsValidIndex(int index) override;
+    gender_t GetActorGender(char const *actormodel) override;
+    bool GetParametersForSoundEx(const char *soundname, HSOUNDSCRIPTHASH& handle,
+                                         CSoundParameters& params, gender_t gender,
+                                         bool isbeingemitted = false) override;
+    CSoundParametersInternal *InternalGetParametersForSound(int index) override;
+    const char *GetWaveName(CUtlSymbol& sym) override;
 };
