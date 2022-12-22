@@ -54,6 +54,7 @@ class Engine final : public IVEngineServer
     CSharedEdictChangeInfo* GetSharedEdictChangeInfo() override;
     IChangeInfoAccessor* GetChangeAccessor(const edict_t *pEdict) override;
     int IsMapValid(const char *filename) override;
+    const char *GetMapEntitiesString() override;
 
     void Think();
 

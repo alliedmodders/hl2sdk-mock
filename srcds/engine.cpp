@@ -235,6 +235,11 @@ int Engine::IsMapValid(const char *filename) {
     return 0;
 }
 
+const char *Engine::GetMapEntitiesString() {
+    Error("%s not implemented", __func__);
+    return "";
+}
+
 void Engine::Think() {
     // We don't do pausing yet.
     vars_.tickcount++;
