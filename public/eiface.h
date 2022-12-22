@@ -100,6 +100,7 @@ public:
     virtual CSharedEdictChangeInfo* GetSharedEdictChangeInfo() = 0;
     virtual IChangeInfoAccessor* GetChangeAccessor(const edict_t *pEdict) = 0;
     virtual int IsMapValid(const char *filename) = 0;
+    virtual const char *GetMapEntitiesString() = 0;
 };
 
 static constexpr char INTERFACEVERSION_SERVERGAMECLIENTS[] = "ServerGameClients004";
