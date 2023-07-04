@@ -119,7 +119,7 @@ void Server::Shutdown() {
 }
 
 void
-Server::Run()
+Server::Run(int max_tick_count)
 {
     while (!interrupt_) {
         DoFrame();
@@ -129,6 +129,9 @@ Server::Run()
         // Gross.
         int ms = int(Engine::get()->vars().interval_per_tick * 1000.0f);
         std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+
+        if (max_tick_count > 0 && Engine::get()->vars().tickcount >= max_tick_count)
+            break;
     }
 
     interrupt_ = false;

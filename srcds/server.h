@@ -44,7 +44,7 @@ class Server final : public ILoggingListener
     // Everything beyond must be called on the server thread.
     bool Start();
     void Shutdown();
-    void Run();
+    void Run(int max_tick_count);
     void DoFrame();
     void PluginLoad(std::string path_in);
     void AddCommand(std::string str);

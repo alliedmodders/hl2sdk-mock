@@ -59,6 +59,10 @@ bool ServerConsole::Run() {
     fprintf(stdout, "Entering interactive mode.\n");
     fprintf(stdout, "Use \"run\", \"continue\", or \"think\" to process frames.\n");
 
+    int max_tick_count = CommandLineImpl::get()->ParmValue("-run-ticks", -1);
+    if (CommandLineImpl::get()->FindParm("-run"))
+        EnterRunMode();
+
     while (!quitting_) {
         fprintf(stdout, "> ");
         fflush(stdout);
@@ -78,12 +82,23 @@ bool ServerConsole::Run() {
 
             if (diag && !run_one_frame_)
                 ConMsg("Completed frame %d\n", Engine::get()->vars().tickcount);
+
+            if (max_tick_count > 0 && Engine::get()->vars().tickcount >= max_tick_count) {
+                PostQuit();
+                break;
+            }
         }
 
         if (run_mode_) {
             fprintf(stdout, "Entering run mode.\n");
-            server_.Run();
+            server_.Run(max_tick_count);
             run_mode_ = false;
+
+            if (max_tick_count > 0 && Engine::get()->vars().tickcount >= max_tick_count) {
+                PostQuit();
+                break;
+            }
+
             fprintf(stdout, "Re-entering command mode.\n");
             fflush(stdin);
         }
