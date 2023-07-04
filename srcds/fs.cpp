@@ -172,3 +172,7 @@ CSysModule *FileSystem::LoadModule(const char *pFileName, const char *pPathID,
 void FileSystem::UnloadModule(CSysModule *pModule) {
     CloseCSysModule(pModule);
 }
+
+int FileSystem::GetSearchPath(const char* pathID, bool bGetPackFiles, char* pPath, int nMaxLen) {
+    return 0;
+}

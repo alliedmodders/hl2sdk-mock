@@ -51,4 +51,5 @@ class IFileSystem : public IBaseFileSystem
   public:
     virtual CSysModule *LoadModule(const char *pFileName, const char *pPathID = 0, bool bValidatedDllOnly = true) = 0;
     virtual void UnloadModule(CSysModule *pModule) = 0;
+    virtual int GetSearchPath(const char* pathID, bool bGetPackFiles, char* pPath, int nMaxLen) = 0;
 };

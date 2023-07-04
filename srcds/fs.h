@@ -37,6 +37,7 @@ class FileSystem final : public IFileSystem
     unsigned int Size(const char* file, const char* pathID = nullptr) override;
     CSysModule *LoadModule(const char *pFileName, const char *pPathID = 0, bool bValidatedDllOnly = true) override;
     void UnloadModule(CSysModule *pModule) override;
+    int GetSearchPath(const char* pathID, bool bGetPackFiles, char* pPath, int nMaxLen) override;
 
     static FileSystem* get();
 
