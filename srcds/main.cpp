@@ -59,18 +59,25 @@ bool ServerConsole::Run() {
     fprintf(stdout, "Entering interactive mode.\n");
     fprintf(stdout, "Use \"run\", \"continue\", or \"think\" to process frames.\n");
 
+    bool ran_cmdline_command = false;
+    const char* cmdline_command = CommandLineImpl::get()->ParmValue("-command", nullptr);
     int max_tick_count = CommandLineImpl::get()->ParmValue("-run-ticks", -1);
     if (CommandLineImpl::get()->FindParm("-run"))
         EnterRunMode();
 
     while (!quitting_) {
-        fprintf(stdout, "> ");
-        fflush(stdout);
 
         std::string cmdline;
-        if (!std::getline(std::cin, cmdline)) {
-            PostQuit();
-            break;
+        if (cmdline_command != nullptr && !ran_cmdline_command) {
+            ran_cmdline_command = true;
+            cmdline = cmdline_command;
+        } else {
+            fprintf(stdout, "> ");
+            fflush(stdout);
+            if (!std::getline(std::cin, cmdline)) {
+                PostQuit();
+                break;
+            }
         }
 
         server_.DispatchCommand(std::move(cmdline));
