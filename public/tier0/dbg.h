@@ -15,3 +15,4 @@ void ConMsg(const char* msg, ...);
 void Msg(const char* msg, ...);
 void Warning(const char* msg, ...);
 void Error(const char* msg, ...);
+void DevMsg(const char* msg, ...);
