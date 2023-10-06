@@ -1,9 +1,11 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
 #pragma once
 
+#include "edict.h"
 #include "tier1/interface.h"
 #include "tier1/KeyValues.h"
-#include "eiface.h"
+
+class CCommand;
 
 enum PLUGIN_RESULT {
     PLUGIN_CONTINUE = 0,
