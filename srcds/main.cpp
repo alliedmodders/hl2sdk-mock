@@ -62,7 +62,7 @@ bool ServerConsole::Run() {
     bool ran_cmdline_command = false;
     const char* cmdline_command = CommandLineImpl::get()->ParmValue("-command", nullptr);
     int max_tick_count = CommandLineImpl::get()->ParmValue("-run-ticks", -1);
-    if (CommandLineImpl::get()->FindParm("-run"))
+    if (CommandLineImpl::get()->FindParm("-run") != -1)
         EnterRunMode();
 
     while (!quitting_) {
