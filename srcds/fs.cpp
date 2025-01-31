@@ -2,6 +2,7 @@
 #include "fs.h"
 
 #include <filesystem>
+#include <cstdarg>
 
 #include "tier0/dbg.h"
 #include "tier1/interface.h"
