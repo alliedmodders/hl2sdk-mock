@@ -28,13 +28,6 @@ except:
 		sys.stderr.write('AMBuild must be installed to build this project.\n')
 		sys.stderr.write('http://www.alliedmods.net/ambuild\n')
 	sys.exit(1)
-from pkg_resources import parse_version
-
-# Hack to show a decent upgrade message, which wasn't done until 2.2.
-ambuild_version = parse_version(getattr(run, 'CURRENT_API', '2.1'))
-if ambuild_version < parse_version("2.2.1"):
-	sys.stderr.write("AMBuild 2.2.1 or higher is required; please update\n")
-	sys.exit(1)
 
 parser = run.BuildParser(sourcePath=sys.path[0], api='2.2')
 parser.options.add_argument('--enable-debug', action='store_true', default = True, dest='debug',
