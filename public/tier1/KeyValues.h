@@ -24,6 +24,7 @@ class KeyValues
     bool LoadFromFile(IBaseFileSystem* fs, const char* resname, const char* pathID = nullptr);
     bool LoadFromBuffer(const char* resname, const char* buffer, IBaseFileSystem* fs = nullptr);
     void RecursiveSaveToFile(CUtlBuffer& buf, int indentLevel) {}
+    void RecursiveMergeKeyValues( KeyValues *baseKV ) {}
     bool SaveToFile(IBaseFileSystem* fs, const char* resourceName, const char* pathID = nullptr) { return false; }
 
     KeyValues* FindKey(const char* key, bool create = false);
