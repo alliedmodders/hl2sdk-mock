@@ -30,6 +30,9 @@ class KeyValues
     KeyValues* FindKey(const char* key, bool create = false);
     KeyValues* FindKey(int keySymbol) { return nullptr; }
     const char *GetString(const char *keyName = nullptr, const char *defaultValue = "");
+    const wchar_t *GetWString(const char *keyName = nullptr, const wchar_t *defaultValue = L"") {
+        return defaultValue;
+    }
     int GetInt(const char *keyName = nullptr, int defaultValue = 0) {
         return defaultValue;
     }
