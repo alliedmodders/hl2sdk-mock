@@ -103,12 +103,14 @@ class Root(object):
         if cxx.target.platform == 'linux':
             if cxx.target.arch == 'x86_64':
                 out_folder = 'lib/linux64'
+                tier0 = 'libtier0_client'
+                vstdlib = 'libvstdlib_client'
             else:
                 out_folder = 'lib/linux'
+                tier0 = 'tier0_i486'
                 tier1 = 'tier1_i486'
                 mathlib = 'mathlib_i486'
-            tier0 = 'libtier0'
-            vstdlib = 'libvstdlib'
+                vstdlib = 'vstdlib_i486'
         elif cxx.target.platform == 'mac':
             if cxx.target.arch == 'x86_64':
                 out_folder = 'lib/osx64'
@@ -196,6 +198,13 @@ class Root(object):
             copy(self.tier1[cxx.target.arch], 'tier1'),
             copy(self.mathlib[cxx.target.arch], 'mathlib'),
             copy(self.vstdlib[cxx.target.arch], 'vstdlib'),
+        ]
+
+        # Copy the tier0 and vstdlib libraries as a fallback for SourceMod which expects them to be called libtier0.
+        # This is a hack and can be removed once hl2sdk-manifests in SourceMod and Metamod is bumped.
+        self.so_files[cxx.target.arch] += [
+            builder.AddCopy(self.tier0[cxx.target.arch], rename(self.tier0[cxx.target.arch].path, "libtier0")),
+            builder.AddCopy(self.vstdlib[cxx.target.arch], rename(self.vstdlib[cxx.target.arch].path, "libvstdlib"))
         ]
 
     def copy_dist(self, cxx, builder):
