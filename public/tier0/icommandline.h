@@ -10,4 +10,4 @@ class ICommandLine
     virtual int FindParm(const char* key) const = 0;
 };
 
-extern ICommandLine* CommandLine();
+extern "C" ICommandLine* CommandLine();
