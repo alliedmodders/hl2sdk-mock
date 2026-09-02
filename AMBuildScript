@@ -103,14 +103,12 @@ class Root(object):
         if cxx.target.platform == 'linux':
             if cxx.target.arch == 'x86_64':
                 out_folder = 'lib/linux64'
-                tier0 = 'libtier0_client'
-                vstdlib = 'libvstdlib_client'
             else:
                 out_folder = 'lib/linux'
-                tier0 = 'tier0_i486'
                 tier1 = 'tier1_i486'
                 mathlib = 'mathlib_i486'
-                vstdlib = 'vstdlib_i486'
+            tier0 = 'libtier0'
+            vstdlib = 'libvstdlib'
         elif cxx.target.platform == 'mac':
             if cxx.target.arch == 'x86_64':
                 out_folder = 'lib/osx64'
