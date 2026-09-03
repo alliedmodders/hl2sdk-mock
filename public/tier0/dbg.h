@@ -11,8 +11,8 @@
 # define Assert(cond) assert((cond))
 #endif
 
-void ConMsg(const char* msg, ...);
-void Msg(const char* msg, ...);
-void Warning(const char* msg, ...);
-void Error(const char* msg, ...);
-void DevMsg(const char* msg, ...);
+DLL_EXPORT void ConMsg(const char* msg, ...);
+DLL_EXPORT void Msg(const char* msg, ...);
+DLL_EXPORT void Warning(const char* msg, ...);
+DLL_EXPORT void Error(const char* msg, ...);
+DLL_EXPORT void DevMsg(const char* msg, ...);

@@ -1,6 +1,8 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
 #pragma once
 
+#include "tier0/platform.h"
+
 class ICommandLine
 {
   public:
@@ -10,4 +12,4 @@ class ICommandLine
     virtual int FindParm(const char* key) const = 0;
 };
 
-extern "C" ICommandLine* CommandLine();
+DLL_EXPORT ICommandLine* CommandLine();

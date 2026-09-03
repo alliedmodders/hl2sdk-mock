@@ -6,6 +6,11 @@
 #include "tier0/dbg.h"
 #include "tier1/interface.h"
 
+// Windows defines CreateEvent as a macro, which breaks our code. Undefine it here.
+#ifdef CreateEvent
+#undef CreateEvent
+#endif
+
 static GameEventManager sGameEventManager;
 
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(GameEventManager, IGameEventManager2,

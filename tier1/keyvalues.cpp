@@ -33,7 +33,7 @@ static bool ReadFromFile(const char* file, std::string* str) {
     fseek(fp.get(), 0, SEEK_SET);
 
     str->resize(size, '\0');
-    fread(str->data(), 1, size, fp.get());
+    fread(const_cast<char*>(str->data()), 1, size, fp.get());
     return true;
 }
 
@@ -44,7 +44,7 @@ static bool ReadFromFile(IBaseFileSystem* fs, const char* path, std::string* str
 
     auto size = fs->Size(h);
     str->resize(size, '\0');
-    fs->Read(str->data(), size, h);
+    fs->Read(const_cast<char*>(str->data()), size, h);
     return true;
 }
 

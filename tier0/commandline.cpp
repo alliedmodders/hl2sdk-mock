@@ -80,7 +80,7 @@ CommandLineImpl::GetCmdLine() const
     if (!cmdline_.empty())
         return cmdline_.c_str();
 #ifdef _WIN32
-    cmdline_ = ke::Join(" ", argv_);
+    cmdline_ = ke::Join(argv_, " ");
 #else
     std::ifstream cmdline("/proc/self/cmdline");
     cmdline_ = std::string(std::istreambuf_iterator<char>(cmdline),

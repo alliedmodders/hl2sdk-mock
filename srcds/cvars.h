@@ -1,4 +1,5 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
+#include <unordered_map>
 #include "tier1/convar.h"
 
 class CommandManager : public ICvar

@@ -354,11 +354,11 @@ void Server::LoadPlugins() {
     std::error_code ec;
     const std::filesystem::path addons{"addons"};
     for (const auto& entry : std::filesystem::directory_iterator{addons, ec}) {
-        if (!ke::EndsWith(entry.path(), ".vdf"))
+        if (!ke::EndsWith(entry.path().string(), ".vdf"))
             continue;
 
         auto kv = std::make_unique<KeyValues>("Plugins");
-        kv->LoadFromFile(nullptr, entry.path().c_str());
+        kv->LoadFromFile(nullptr, entry.path().string().c_str());
 
         if (auto file = kv->GetString("file", nullptr))
             PluginLoad(file);

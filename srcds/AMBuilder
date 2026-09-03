@@ -23,14 +23,20 @@ binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'public', 'tier1'),
     os.path.join(builder.sourcePath, 'third_party', 'amtl'),
 ]
-binary.compiler.linkflags += [
-    '-Wl,-z,origin',
-]
-binary.compiler.postlink += [
-    Root.tier1[builder.cxx.target.arch],
-    '-ldl',
-    '-lpthread',
-]
+
+if binary.compiler.like('gcc'):
+    binary.compiler.linkflags += [
+        '-Wl,-z,origin',
+    ]
+    binary.compiler.postlink += [
+        Root.tier1[builder.cxx.target.arch],
+        '-ldl',
+        '-lpthread',
+    ]
+elif binary.compiler.like('msvc'):
+    binary.compiler.linkflags += [
+        Root.tier1[builder.cxx.target.arch],
+    ]
 
 # Transform 'tier0' => 'tier0_i486.so' or whatever funky name is needed for
 # this platform. The rename map is computed in AMBuildScript.
