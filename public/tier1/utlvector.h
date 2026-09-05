@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <vector>
 
-template <typename T>
+template <typename T, typename I = int>
+class CUtlMemory;
+
+template <typename T, typename A = CUtlMemory<T>>
 class CUtlVector
 {
   public:
