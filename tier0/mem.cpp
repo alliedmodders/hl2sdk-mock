@@ -1,5 +1,5 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
-#include "tier0/dbg.h"
+#include "tier0/mem.h"
 
 #include <stdlib.h>
 

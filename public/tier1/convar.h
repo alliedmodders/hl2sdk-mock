@@ -30,10 +30,9 @@ class ConCommandBase
     friend void ConVar_Register(int, IConCommandBaseAccessor*);
     friend void ConVar_Unregister();
 
-  protected:
+  public:
     static ConCommandBase* sCommandList;
 
-  public:
     explicit ConCommandBase(const char* name)
       : next_(sCommandList),
         name_(name)

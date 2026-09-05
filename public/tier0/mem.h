@@ -3,5 +3,7 @@
 
 #include <stdlib.h>
 
-extern void* MemAllocScratch(int size);
-extern void MemFreeScratch();
+#include "platform.h"
+
+DLL_EXPORT void* MemAllocScratch(int size);
+DLL_EXPORT void MemFreeScratch();

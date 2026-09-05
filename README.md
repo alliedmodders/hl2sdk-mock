@@ -26,12 +26,21 @@ You will need to build both hl2sdk-mock and Metamod:Source:
 
 Once you have it built, you will need to make a gamedir. Because many plugins
 use real filesystem paths, we cannot expose a virtual filesystem. For ease of
-development you can use `build_gamedir.sh`. It creates a filesystem structure
+development you can use `build_gamedir.sh` on Linux/macOS or
+`build_gamedir.ps1` on Windows. These scripts create a filesystem structure
 given a template directory, and then creates symlinks for all files. This eases
 development as you don't have to rsync or copy new files when you rebuild a
 plugin.
 
-For example:
+On Windows, creating symlinks requires either Windows Developer Mode or an
+elevated PowerShell session. To enable Developer Mode, open **Settings >
+System > For developers**, turn on **Developer Mode**, and restart PowerShell.
+Alternatively, open PowerShell with **Run as administrator**. Then run:
+
+    .\build_gamedir.ps1 C:\path\to\gamedir ..\metamod-source\objdir\package
+    .\build_gamedir.ps1 C:\path\to\gamedir ..\sourcemod\objdir\package
+
+On Linux/macOS, for example:
 
     mkdir ~/gamedir
     bash build_gamedir.sh ~/gamedir ../metamod-source/objdir/package
