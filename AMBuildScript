@@ -203,10 +203,11 @@ class Root(object):
 
         # Copy the tier0 and vstdlib libraries as a fallback for SourceMod which expects them to be called libtier0.
         # This is a hack and can be removed once hl2sdk-manifests in SourceMod and Metamod is bumped.
-        self.so_files[cxx.target.arch] += [
-            builder.AddCopy(self.tier0[cxx.target.arch], rename(self.tier0[cxx.target.arch].path, "libtier0")),
-            builder.AddCopy(self.vstdlib[cxx.target.arch], rename(self.vstdlib[cxx.target.arch].path, "libvstdlib"))
-        ]
+        if cxx.target.platform == 'linux':
+            self.so_files[cxx.target.arch] += [
+                builder.AddCopy(self.tier0[cxx.target.arch], rename(self.tier0[cxx.target.arch].path, "libtier0")),
+                builder.AddCopy(self.vstdlib[cxx.target.arch], rename(self.vstdlib[cxx.target.arch].path, "libvstdlib"))
+            ]
 
     def copy_dist(self, cxx, builder):
         builder.SetBuildFolder('dist/{}'.format(cxx.target.arch))

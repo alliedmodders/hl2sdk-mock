@@ -56,8 +56,16 @@ def link_library(srcbin, destname_key):
     binary.compiler.linkflags += [newname]
 
 arch = binary.compiler.target.arch
-link_library(Root.tier0[arch], 'tier0')
-link_library(Root.tier0[arch], 'vstdlib')
+
+if binary.compiler.like('msvc'):
+    binary.compiler.linkflags += [
+        Root.tier0[builder.cxx.target.arch],
+        Root.vstdlib[builder.cxx.target.arch],
+        Root.gamedll[builder.cxx.target.arch]
+    ]
+else:
+    link_library(Root.tier0[arch], 'tier0')
+    link_library(Root.vstdlib[arch], 'vstdlib')
 
 entry = builder.Add(binary).binary
 Root.srcds[binary.compiler.target.arch] = entry

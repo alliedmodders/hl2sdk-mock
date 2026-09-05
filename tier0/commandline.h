@@ -1,11 +1,12 @@
 // vim: set sts=4 ts=8 sw=4 tw=99 et:
 #pragma once
+#include "tier0/platform.h"
 #include "tier0/icommandline.h"
 
 #include <string>
 #include <vector>
 
-class CommandLineImpl final : public ICommandLine
+class DLL_CLASS CommandLineImpl final : public ICommandLine
 {
   public:
     void Init(int argc, char** argv);
@@ -22,4 +23,4 @@ class CommandLineImpl final : public ICommandLine
     mutable std::string cmdline_;
 };
 
-std::vector<std::string> ParseArgs(const std::string& cmdline);
+DLL_FUNCTION std::vector<std::string> ParseArgs(const std::string& cmdline);

@@ -6,9 +6,10 @@
 #include <mutex>
 #include <vector>
 
+#include "tier0/platform.h"
 #include "tier0/logging.h"
 
-class LogManager
+class DLL_CLASS LogManager
 {
   public:
     LogManager();

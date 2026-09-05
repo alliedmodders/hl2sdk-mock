@@ -15,8 +15,12 @@ typedef char tchar;
 
 #ifdef _WIN32
 # define DLL_EXPORT extern "C" __declspec(dllexport)
+# define DLL_CLASS __declspec(dllexport)
+# define DLL_FUNCTION __declspec(dllexport)
 #else
 # define DLL_EXPORT extern "C"
+# define DLL_CLASS
+# define DLL_FUNCTION
 # define MAX_PATH PATH_MAX
 #endif
 

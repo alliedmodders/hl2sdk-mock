@@ -14,6 +14,10 @@ binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'third_party', 'amtl'),
 ]
 
+if binary.compiler.like('msvc'):
+    binary.compiler.linkflags += [
+        Root.tier0[builder.cxx.target.arch]
+    ]
 binary.compiler.postlink += [
     Root.tier1[builder.cxx.target.arch],
 ]
