@@ -46,6 +46,8 @@ class Root(object):
             '-std=c++17',
             '-Wno-unused-private-field',
           ]
+          if cxx.target.platform == 'mac':
+            cxx.linkflags += ['-undefined', 'dynamic_lookup']
         elif cxx.like('msvc'):
           if builder.options.debug == '1':
             cxx.cflags += ['/MTd']
@@ -169,7 +171,11 @@ class Root(object):
         return self.StaticLibraryBuilder(compiler, name)
 
     def LibraryBuilder(self, compiler, name):
-        return compiler.Library(name)
+        binary = compiler.Library(name)
+        if compiler.target.platform == 'mac':
+            newname = self.renames[compiler.target.arch].get(name, name)
+            binary.compiler.linkflags += ['-install_name', '@rpath/' + newname + '.dylib']
+        return binary
 
     def Library(self, context, name):
         compiler = context.cxx.clone()
@@ -202,10 +208,11 @@ class Root(object):
 
         # Copy the tier0 and vstdlib libraries as a fallback for SourceMod which expects them to be called libtier0.
         # This is a hack and can be removed once hl2sdk-manifests in SourceMod and Metamod is bumped.
-        self.so_files[cxx.target.arch] += [
-            builder.AddCopy(self.tier0[cxx.target.arch], rename(self.tier0[cxx.target.arch].path, "libtier0")),
-            builder.AddCopy(self.vstdlib[cxx.target.arch], rename(self.vstdlib[cxx.target.arch].path, "libvstdlib"))
-        ]
+        if self.renames[cxx.target.arch]['tier0'] != 'libtier0':
+            self.so_files[cxx.target.arch] += [
+                builder.AddCopy(self.tier0[cxx.target.arch], rename(self.tier0[cxx.target.arch].path, "libtier0")),
+                builder.AddCopy(self.vstdlib[cxx.target.arch], rename(self.vstdlib[cxx.target.arch].path, "libvstdlib"))
+            ]
 
     def copy_dist(self, cxx, builder):
         builder.SetBuildFolder('dist/{}'.format(cxx.target.arch))

@@ -6,7 +6,8 @@ if [ $# -ne 2 ]; then
     exit 1;
 fi
 
-for i in $(find ${2} -printf '%P\n'); do
+mkdir -p "${1}"
+for i in $(cd "${2}" && find . -mindepth 1 | sed 's|^\./||'); do
     srcpath=$(realpath ${2}/${i})
     dstpath=${1}/${i}
     if [[ -d "${srcpath}" ]]; then

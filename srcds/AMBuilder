@@ -23,9 +23,10 @@ binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'public', 'tier1'),
     os.path.join(builder.sourcePath, 'third_party', 'amtl'),
 ]
-binary.compiler.linkflags += [
-    '-Wl,-z,origin',
-]
+if binary.compiler.target.platform == 'linux':
+    binary.compiler.linkflags += [
+        '-Wl,-z,origin',
+    ]
 binary.compiler.postlink += [
     Root.tier1[builder.cxx.target.arch],
     '-ldl',
@@ -46,12 +47,15 @@ def link_library(srcbin, destname_key):
     output = builder.AddSymlink(srcbin, output_path)
 
     binary.compiler.weaklinkdeps += [output]
-    binary.compiler.linkflags += ['-Wl,-rpath,$ORIGIN/']
+    if binary.compiler.target.platform == 'mac':
+        binary.compiler.linkflags += ['-Wl,-rpath,@executable_path/']
+    else:
+        binary.compiler.linkflags += ['-Wl,-rpath,$ORIGIN/']
     binary.compiler.linkflags += [newname]
 
 arch = binary.compiler.target.arch
 link_library(Root.tier0[arch], 'tier0')
-link_library(Root.tier0[arch], 'vstdlib')
+link_library(Root.vstdlib[arch], 'vstdlib')
 
 entry = builder.Add(binary).binary
 Root.srcds[binary.compiler.target.arch] = entry
